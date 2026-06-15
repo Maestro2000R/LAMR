@@ -53,3 +53,6 @@ Thumbs.db
 # Build artifacts
 /public/build
 /public/vendor
+
+# Local GitHub CLI artifacts
+.ghcli/
