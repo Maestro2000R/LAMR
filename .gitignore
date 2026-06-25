@@ -56,3 +56,17 @@ Thumbs.db
 
 # Local GitHub CLI artifacts
 .ghcli/
+
+# Generated HTML exports
+cadre-logique-amnar.html
+*.export.html
+
+# Imported data files
+*.xlsx
+*.xls
+*.csv
+
+# Sensitive data
+*.pem
+*.key
+secrets.json
