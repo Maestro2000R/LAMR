@@ -10,7 +10,7 @@ class AgentController extends Controller
 {
     public function index()
     {
-        $agents = Agent::all();
+        $agents = Agent::orderBy('name')->paginate(15);
         return view('agents.index', compact('agents'));
     }
 
@@ -35,6 +35,7 @@ class AgentController extends Controller
 
     public function show(Agent $agent)
     {
+        $agent->load('assignments.site');
         return view('agents.show', compact('agent'));
     }
 

@@ -22,17 +22,23 @@ Ce dossier contient les sprints et tâches du projet mini-CRM LAMR.
 
 | Sprint | Titre                        | Statut     |
 |--------|------------------------------|------------|
-| 01     | Infrastructure & Installation | En cours   |
-| 02     | Données de démonstration      | À faire    |
-| 03     | Vues Blade — Agents           | À faire    |
-| 04     | Vues Blade — Sites & Assignments | À faire |
-| 05     | Dashboard & UX                | À faire    |
-| 06     | API & Tests                   | À faire    |
+| 01     | Infrastructure & Installation | Terminé   |
+| 02     | Données de démonstration      | Terminé    |
+| 03     | Vues Blade — Agents           | Terminé    |
+| 04     | Vues Blade — Sites & Assignments | Terminé |
+| 05     | Dashboard & UX                | Terminé    |
+| 06     | API & Tests                   | Terminé    |
 
-## État du projet au démarrage (2026-06-14)
+## État du projet (2026-09-20)
 
-Déjà en place :
+Application Laravel complète et fonctionnelle :
 - Modèles : `Agent`, `Site`, `Assignment` avec relations Eloquent
-- Migrations : 3 tables (`agents`, `sites`, `assignments`)
-- Contrôleurs : CRUD complet pour les 3 entités
-- Routes : `web.php` avec `Route::resource` protégées par `auth`
+- Migrations : 3 tables (`agents`, `sites`, `assignments`), exécutées sur SQLite (démo locale sans MySQL)
+- Contrôleurs web : CRUD complet pour les 3 entités, avec pagination, filtres et eager loading
+- Vues Blade : layout Breeze (`x-app-layout`), navigation, messages flash, formulaires avec validation inline
+- Authentification : Laravel Breeze (login/register/mot de passe oublié), utilisateur de démo `admin@lamr.test` / `password`
+- Dashboard : compteurs (agents actifs, sites, affectations en cours) + 5 dernières affectations
+- Seeders/Factories : 20 agents, 10 sites, 30 affectations générés via Faker
+- API REST : `routes/api.php` protégée par Sanctum (`agents`, `sites`, `assignments` + `POST /api/tokens`)
+- Tests : 39 tests Feature (`php artisan test`), tous verts
+- CI : `.github/workflows/tests.yml` exécute la suite de tests sur chaque push

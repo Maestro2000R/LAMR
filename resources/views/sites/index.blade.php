@@ -1,29 +1,59 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Sites') }}</h2>
+            <a href="{{ route('sites.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
+                {{ __('Nouveau site') }}
+            </a>
+        </div>
+    </x-slot>
 
-@section('content')
-<div class="bg-white p-4 rounded shadow">
-    <div class="flex justify-between items-center mb-4">
-        <h1 class="text-xl font-bold">Sites</h1>
-        <a href="{{ route('sites.create') }}" class="bg-blue-600 text-white px-3 py-1 rounded">Nouveau site</a>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Nom') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Adresse') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Ville') }}</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Agents affectés') }}</th>
+                                <th class="px-6 py-3"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @forelse ($sites as $site)
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <a href="{{ route('sites.show', $site) }}" class="text-indigo-600 hover:text-indigo-900 font-medium">{{ $site->name }}</a>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $site->address ?? '—' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $site->city ?? '—' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $site->assignments_count }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-3">
+                                        <a href="{{ route('sites.edit', $site) }}" class="text-indigo-600 hover:text-indigo-900">{{ __('Modifier') }}</a>
+                                        <form action="{{ route('sites.destroy', $site) }}" method="POST" class="inline" onsubmit="return confirm('Supprimer ce site ?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900">{{ __('Supprimer') }}</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500">{{ __('Aucun site pour le moment.') }}</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                @if ($sites->hasPages())
+                    <div class="px-6 py-4 border-t border-gray-100">
+                        {{ $sites->links() }}
+                    </div>
+                @endif
+            </div>
+        </div>
     </div>
-
-    <ul>
-        @foreach($sites as $site)
-            <li class="border-t py-2 flex justify-between">
-                <div>
-                    <strong>{{ $site->name }}</strong><br>
-                    <small>{{ $site->address }} — {{ $site->city }}</small>
-                </div>
-                <div>
-                    <a href="{{ route('sites.edit', $site) }}" class="text-indigo-600 mr-2">Modif</a>
-                    <form action="{{ route('sites.destroy', $site) }}" method="POST" style="display:inline">
-                        @csrf
-                        @method('DELETE')
-                        <button class="text-red-600" onclick="return confirm('Supprimer ?')">Suppr</button>
-                    </form>
-                </div>
-            </li>
-        @endforeach
-    </ul>
-</div>
-@endsection
+</x-app-layout>

@@ -11,30 +11,30 @@
 ## Tâches
 
 ### 2.1 Factories
-- [ ] Créer `AgentFactory` (`php artisan make:factory AgentFactory --model=Agent`)
+- [x] Créer `AgentFactory` (`php artisan make:factory AgentFactory --model=Agent`)
   - Champs : `name` (faker), `email` (unique), `phone` (nullable), `status` (active/inactive aléatoire)
-- [ ] Créer `SiteFactory` (`php artisan make:factory SiteFactory --model=Site`)
+- [x] Créer `SiteFactory` (`php artisan make:factory SiteFactory --model=Site`)
   - Champs : `name`, `address`, `city`
-- [ ] Créer `AssignmentFactory` (`php artisan make:factory AssignmentFactory --model=Assignment`)
+- [x] Créer `AssignmentFactory` (`php artisan make:factory AssignmentFactory --model=Assignment`)
   - Champs : `agent_id`, `site_id`, `starts_at`, `ends_at`, `role`
 
 ### 2.2 Seeder principal
-- [ ] Créer `DemoSeeder` (`php artisan make:seeder DemoSeeder`)
-- [ ] Implémenter le seeder :
+- [x] Créer `DemoSeeder` (`php artisan make:seeder DemoSeeder`)
+- [x] Implémenter le seeder :
   - 20 agents (mix actifs/inactifs)
   - 10 sites
   - 30 assignments (relations variées)
-- [ ] Enregistrer `DemoSeeder` dans `DatabaseSeeder::run()`
+- [x] Enregistrer `DemoSeeder` dans `DatabaseSeeder::run()`
 
 ### 2.3 Exécution et vérification
-- [ ] Exécuter `php artisan db:seed --class=DemoSeeder`
-- [ ] Vérifier les données via `php artisan tinker` :
+- [x] Exécuter `php artisan db:seed --class=DemoSeeder`
+- [x] Vérifier les données via `php artisan tinker` :
   ```php
   App\Models\Agent::count();   // 20
   App\Models\Site::count();    // 10
   App\Models\Assignment::count(); // ~30
   ```
-- [ ] Vérifier qu'un agent peut avoir plusieurs assignments : `Agent::first()->assignments`
+- [x] Vérifier qu'un agent peut avoir plusieurs assignments : `Agent::first()->assignments`
 
 ---
 

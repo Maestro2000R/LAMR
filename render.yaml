@@ -1,0 +1,52 @@
+databases:
+  - name: lamr-db
+    plan: free
+    databaseName: lamr
+    user: lamr
+
+services:
+  - type: web
+    name: lamr-app
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /up
+    envVars:
+      - key: APP_NAME
+        value: "LAMR CRM"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: lamr-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: lamr-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: lamr-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: lamr-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: lamr-db
+          property: password
+      - key: SESSION_DRIVER
+        value: database
+      - key: SESSION_SECURE_COOKIE
+        value: "true"
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: FILESYSTEM_DISK
+        value: public

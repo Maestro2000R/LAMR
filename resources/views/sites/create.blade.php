@@ -1,25 +1,21 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Nouveau site') }}</h2>
+    </x-slot>
 
-@section('content')
-<div class="bg-white p-4 rounded shadow">
-    <h1 class="text-xl font-bold mb-4">Créer un site</h1>
-    <form action="{{ route('sites.store') }}" method="POST">
-        @csrf
-        <div class="mb-2">
-            <label class="block">Nom</label>
-            <input name="name" class="border p-2 w-full" value="{{ old('name') }}">
+    <div class="py-12">
+        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <form method="POST" action="{{ route('sites.store') }}" class="space-y-6">
+                    @csrf
+                    @include('sites._form')
+
+                    <div class="flex items-center gap-4">
+                        <x-primary-button>{{ __('Créer') }}</x-primary-button>
+                        <a href="{{ route('sites.index') }}" class="text-sm text-gray-600 hover:text-gray-900">{{ __('Annuler') }}</a>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="mb-2">
-            <label class="block">Adresse</label>
-            <input name="address" class="border p-2 w-full" value="{{ old('address') }}">
-        </div>
-        <div class="mb-2">
-            <label class="block">Ville</label>
-            <input name="city" class="border p-2 w-full" value="{{ old('city') }}">
-        </div>
-        <div>
-            <button class="bg-blue-600 text-white px-3 py-1 rounded">Créer</button>
-        </div>
-    </form>
-</div>
-@endsection
+    </div>
+</x-app-layout>

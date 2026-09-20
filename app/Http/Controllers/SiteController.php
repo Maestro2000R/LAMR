@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Site;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class SiteController extends Controller
 {
     public function index()
     {
-        $sites = Site::all();
+        $sites = Site::withCount('assignments')->orderBy('name')->paginate(15);
         return view('sites.index', compact('sites'));
     }
 
@@ -34,6 +33,7 @@ class SiteController extends Controller
 
     public function show(Site $site)
     {
+        $site->load('assignments.agent');
         return view('sites.show', compact('site'));
     }
 

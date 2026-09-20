@@ -11,34 +11,34 @@
 ## Tâches
 
 ### 4.1 Vues Sites
-- [ ] Créer `resources/views/sites/index.blade.php`
+- [x] Créer `resources/views/sites/index.blade.php`
   - Tableau : nom, adresse, ville, nombre d'agents affectés, actions
   - Bouton "Nouveau site"
-- [ ] Créer `resources/views/sites/create.blade.php`
+- [x] Créer `resources/views/sites/create.blade.php`
   - Champs : name, address, city
-- [ ] Créer `resources/views/sites/edit.blade.php`
+- [x] Créer `resources/views/sites/edit.blade.php`
   - Pré-remplissage des champs
-- [ ] Créer `resources/views/sites/show.blade.php`
+- [x] Créer `resources/views/sites/show.blade.php`
   - Informations du site
   - Liste des assignments actifs (agents affectés)
 
 ### 4.2 Vues Assignments
-- [ ] Créer `resources/views/assignments/index.blade.php`
+- [x] Créer `resources/views/assignments/index.blade.php`
   - Tableau : agent, site, rôle, date début, date fin, actions
   - Filtres optionnels : par agent, par site, par date
-- [ ] Créer `resources/views/assignments/create.blade.php`
+- [x] Créer `resources/views/assignments/create.blade.php`
   - Champs : agent (select), site (select), role, starts_at, ends_at
   - Les selects chargent les données depuis la base
-- [ ] Créer `resources/views/assignments/edit.blade.php`
+- [x] Créer `resources/views/assignments/edit.blade.php`
   - Pré-remplissage, avec `@method('PUT')`
-- [ ] Créer `resources/views/assignments/show.blade.php`
+- [x] Créer `resources/views/assignments/show.blade.php`
   - Détail de l'assignment avec liens vers l'agent et le site
 
 ### 4.3 Mise à jour des contrôleurs
-- [ ] `SiteController::index()` : ajouter `withCount('assignments')`
-- [ ] `SiteController::show()` : charger `assignments.agent`
-- [ ] `AssignmentController::create()` : passer `$agents` et `$sites` à la vue
-- [ ] `AssignmentController::edit()` : idem
+- [x] `SiteController::index()` : ajouter `withCount('assignments')`
+- [x] `SiteController::show()` : charger `assignments.agent`
+- [x] `AssignmentController::create()` : passer `$agents` et `$sites` à la vue
+- [x] `AssignmentController::edit()` : idem
 
 ---
 

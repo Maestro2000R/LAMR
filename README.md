@@ -1,98 +1,28 @@
-# Mini-CRM de démonstration (Suivi des agents par site)
+# LAMR CRM — Suivi des agents par site & suivi des moteurs
 
-Ceci est un guide rapide pour créer et exécuter une version de démonstration d'un mini-CRM basé sur Laravel, utilisant MySQL.
+Application Laravel qui héberge deux modules distincts sous une authentification commune :
 
-## Objectif
-- Suivre des `Agent` affectés à des `Site` via des `Assignment`.
+- **CRM LAMR** : suivi d'`Agent`s affectés à des `Site`s via des `Assignment`s (affectations).
+- **Maintenance moteurs (Les Ateliers MR)** : suivi de l'entretien des moteurs électriques à courant continu — parc moteurs, mesures d'isolement (DAR/PI), usure des balais à charbon.
 
-## Prérequis
-- PHP 8.1+ (ou version compatible Laravel actuelle)
-- Composer
-- MySQL
-- Node.js + npm (optionnel pour assets frontend)
+## Stack
 
-## Installation rapide
+- Laravel 13 / PHP 8.3+
+- Blade + Tailwind CSS (Laravel Breeze pour l'authentification)
+- SQLite par défaut (zéro configuration pour la démo — voir plus bas pour passer sur MySQL)
+- Laravel Sanctum pour l'API
 
-1. Créer le projet Laravel (si vous ne l'avez pas déjà):
-
-```bash
-composer create-project laravel/laravel laravel-crm-demo
-cd laravel-crm-demo
-```
-
-2. Configurer la base de données MySQL dans le fichier `.env`:
-
-```
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=laravel_demo
-DB_USERNAME=root
-DB_PASSWORD=
-```
-
-3. Créer la base de données MySQL (exemple):
+## Installation
 
 ```bash
-mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS laravel_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-```
+composer install
+npm install && npm run build
 
-4. Installer les dépendances JS (optionnel pour UI):
+cp .env.example .env   # si .env n'existe pas déjà
+php artisan key:generate
 
-```bash
-npm install
-npm run build   # ou npm run dev pour développement
-```
-
-## Génération des modèles & migrations (exemples)
-
-Vous pouvez générer les modèles et migrations suivants:
-
-```bash
-php artisan make:model Agent -m
-php artisan make:model Site -m
-php artisan make:model Assignment -m
-```
-
-Exemples de champs (à adapter dans les fichiers de migration):
-
-- `agents` : `id`, `name`, `email`, `phone`, `status`, `timestamps`
-- `sites` : `id`, `name`, `address`, `city`, `timestamps`
-- `assignments` : `id`, `agent_id` (FK), `site_id` (FK), `starts_at`, `ends_at`, `role`, `timestamps`
-
-Pensez à ajouter les clés étrangères et les index dans les migrations.
-
-## Migrations & seeders
-
-Après avoir édité les migrations, exécutez:
-
-```bash
-php artisan migrate
-```
-
-Pour remplir des données de démonstration, créez un seeder et lancez:
-
-```bash
-php artisan make:seeder DemoSeeder
-php artisan db:seed --class=DemoSeeder
-```
-
-## Contrôleurs & routes (CRUD)
-
-Générez rapidement des contrôleurs ressources:
-
-```bash
-php artisan make:controller AgentController --resource
-php artisan make:controller SiteController --resource
-php artisan make:controller AssignmentController --resource
-```
-
-Ajoutez les routes dans `routes/web.php` :
-
-```php
-Route::resource('agents', AgentController::class);
-Route::resource('sites', SiteController::class);
-Route::resource('assignments', AssignmentController::class);
+php artisan migrate --seed
+php artisan storage:link   # requis pour les photos (moteurs, balais)
 ```
 
 ## Lancer l'application
@@ -102,46 +32,107 @@ php artisan serve
 # puis ouvrir http://127.0.0.1:8000
 ```
 
-## Suggestions pour la démonstration
+Compte de démonstration créé par le seeder :
 
-- Ajouter une authentification rapide : `composer require laravel/breeze --dev` puis `php artisan breeze:install` pour des pages d'auth par défaut.
-- UI minimale : utiliser Blade + Tailwind (déjà inclus avec Breeze) pour créer des vues CRUD simples.
-- Endpoint API : créer des routes `api.php` pour une démonstration sans UI.
+- Email : `admin@lamr.test`
+- Mot de passe : `password`
 
-## Authentification (optionnel - Breeze)
+## Données de démonstration
 
-Pour ajouter une authentification de démonstration avec Blade + Tailwind via Breeze :
+`php artisan migrate:fresh --seed` régénère la base avec :
+- 20 agents (statuts actif/inactif mélangés), 10 sites, 30 affectations (module CRM)
+- 2 clients, 2 sites, 3 emplacements, 2 instruments, 2 références de balais et 3 moteurs avec un historique
+  de mesures d'isolement et de relevés de balais (module maintenance moteurs)
+
+## Fonctionnalités — CRM LAMR
+
+- **Authentification** : login / inscription / mot de passe oublié (Breeze)
+- **Dashboard** (`/dashboard`) : compteurs (agents actifs, sites, affectations en cours) + 5 dernières affectations
+- **Agents** (`/agents`) : liste paginée, création, édition, fiche détail avec ses affectations
+- **Sites** (`/sites`) : liste avec nombre d'agents affectés, CRUD complet, fiche détail
+- **Affectations** (`/assignments`) : CRUD complet, filtres par agent/site, sélection dynamique agent/site
+- **API REST** (`/api/*`) : protégée par Sanctum, ressources `agents`, `sites`, `assignments`
+
+## Fonctionnalités — Maintenance moteurs (`/maintenance/*`)
+
+Première itération ("noyau minimal") du cahier des charges *Application de suivi de l'entretien des moteurs
+électriques à courant continu* : référentiel moteurs, mesures d'isolement, suivi des balais à charbon.
+Hors périmètre de cette itération : workflow d'intervention complet, alertes automatiques, tableaux de bord
+dédiés, rapports PDF, mode hors connexion, API, rôles/habilitations différenciés.
+
+- **Référentiel** : `Client` → `Site` → `Emplacement`, `Instrument` (mégohmmètres, avec suivi de validité
+  d'étalonnage), catalogue de `Balai` (dimensions, limites, stock)
+- **Moteurs** (`/maintenance/moteurs`) : fiche de vie complète (identité, plaque signalétique, construction,
+  criticité, documentation photo), QR code généré à la volée renvoyant vers la fiche
+- **Mesures d'isolement** : saisie MΩ/GΩ normalisée, calcul automatique du DAR et du PI, classification
+  paramétrable (Normal / À surveiller / Critique / Non interprétable) fondée sur le seuil du moteur et la
+  tendance par rapport à la dernière mesure comparable (même circuit, même état thermique)
+- **Balais à charbon** : positions par moteur, relevés chronologiques, calcul de l'usure cumulée, du
+  pourcentage consommé, de la vitesse d'usure, de l'autonomie estimée et du déséquilibre entre balais
+
+## API
+
+Obtenir un token :
 
 ```bash
-# installer le package Breeze
-composer require laravel/breeze --dev
-
-# générer les scaffolds Blade
-php artisan breeze:install blade
-
-# installer les dépendances JS et builder
-npm install
-npm run dev    # ou `npm run build` pour production
-
-# exécuter les migrations et seeders
-php artisan migrate
-php artisan db:seed
-
-# lancer le serveur
-php artisan serve
+curl -X POST http://127.0.0.1:8000/api/tokens \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@lamr.test","password":"password","device_name":"cli"}'
 ```
 
-Après `breeze:install`, tu auras des routes et vues pour `login`, `register`, `logout`.
+Puis appeler l'API avec le header `Authorization: Bearer <token>` :
 
-Si tu veux, je peux exécuter ces commandes localement pour toi (mais il faudra que Composer et npm soient disponibles sur ta machine). Autre option : je peux simplement générer des instructions et adapter les vues comme je l'ai fait.
+```bash
+curl http://127.0.0.1:8000/api/agents -H "Authorization: Bearer <token>"
+```
 
-## Ce que je peux faire ensuite
-- Implémenter les migrations et modèles complets.
-- Ajouter les contrôleurs CRUD et vues Blade.
-- Préparer des seeders avec données réalistes.
-- Ajouter l'authentification de démo.
+## Tests
 
-Si tu veux, je peux maintenant générer les migrations, modèles et contrôleurs directement dans ce dépôt. Dis-moi si tu veux l'authentification et si tu veux des champs spécifiques pour `Agent` ou `Site`.
+```bash
+php artisan test
+```
 
----
-Fichier créé automatiquement pour la démonstration.
+60 tests couvrant les CRUD web, les relations agent/site/affectation (cascade de suppression), l'API, et pour
+le module maintenance : le calcul DAR/PI/classification (`IsolationAnalyzer`), les calculs d'usure des balais
+et les cascades de suppression.
+
+## Passer sur MySQL
+
+Par défaut le projet utilise SQLite (`database/database.sqlite`) pour ne nécessiter aucune installation. Pour utiliser MySQL, éditer `.env` :
+
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=lamr_crm
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Puis créer la base et relancer les migrations :
+
+```bash
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS lamr_crm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+php artisan migrate:fresh --seed
+```
+
+## Déploiement (Render)
+
+Le dépôt contient tout ce qu'il faut pour un déploiement en un clic sur [Render](https://render.com) :
+`Dockerfile` (build multi-stage : assets Vite + PHP), `docker/entrypoint.sh` (migrations, lien de stockage,
+seed unique au premier démarrage) et `render.yaml` (Blueprint : service web + base PostgreSQL gratuite).
+
+1. Ouvrez le lien de déploiement (à adapter avec votre branche/repo si besoin) :
+   `https://render.com/deploy?repo=https://github.com/Maestro2000R/LAMR/tree/claude/app-cahier-charge-d76d54`
+2. Connectez votre compte GitHub si demandé, puis validez la création du Blueprint.
+3. Render provisionne la base PostgreSQL et le service web, construit l'image Docker, exécute les
+   migrations et seed automatiquement (une seule fois — les déploiements suivants ne re-seedent pas).
+4. Une fois le déploiement terminé, l'URL `https://<nom-du-service>.onrender.com` est affichée dans le
+   tableau de bord Render.
+
+Le plan gratuit de Render a un disque éphémère : les photos uploadées (moteurs, balais) ne survivent pas à
+un redéploiement. Pour une démo persistante, passer sur un disque payant ou un stockage S3-compatible.
+
+## Structure du projet
+
+Le cahier des charges détaillé (sprints, tâches, critères de validation) se trouve dans [`tasks/`](tasks/README.md).
