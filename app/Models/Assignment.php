@@ -17,6 +17,11 @@ class Assignment extends Model
         'role',
     ];
 
+    protected $casts = [
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
+    ];
+
     public function agent()
     {
         return $this->belongsTo(Agent::class);

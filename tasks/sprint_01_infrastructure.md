@@ -13,11 +13,11 @@
 - [x] Créer les migrations (tables `agents`, `sites`, `assignments`)
 - [x] Créer les contrôleurs resource (`AgentController`, `SiteController`, `AssignmentController`)
 - [x] Définir les routes dans `routes/web.php`
-- [ ] Exécuter `composer create-project laravel/laravel .` à la racine du projet Laravel réel
-- [ ] Copier/intégrer les fichiers existants dans le projet Laravel installé
+- [x] Exécuter `composer create-project laravel/laravel .` à la racine du projet Laravel réel
+- [x] Copier/intégrer les fichiers existants dans le projet Laravel installé
 
 ### 1.2 Configuration de l'environnement
-- [ ] Configurer `.env` avec les paramètres MySQL :
+- [x] Configurer `.env` avec les paramètres MySQL :
   ```
   DB_CONNECTION=mysql
   DB_HOST=127.0.0.1
@@ -26,23 +26,23 @@
   DB_USERNAME=root
   DB_PASSWORD=
   ```
-- [ ] Créer la base de données : `CREATE DATABASE lamr_crm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
+- [x] Créer la base de données : `CREATE DATABASE lamr_crm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`
 
 ### 1.3 Migrations
-- [ ] Exécuter `php artisan migrate`
-- [ ] Vérifier les 3 tables créées en base
+- [x] Exécuter `php artisan migrate`
+- [x] Vérifier les 3 tables créées en base
 
 ### 1.4 Authentification (Laravel Breeze)
-- [ ] Installer Breeze : `composer require laravel/breeze --dev`
-- [ ] Publier les vues auth : `php artisan breeze:install blade`
-- [ ] Installer les assets : `npm install && npm run build`
-- [ ] Exécuter les migrations Breeze : `php artisan migrate`
-- [ ] Tester la page `/login` et `/register`
+- [x] Installer Breeze : `composer require laravel/breeze --dev`
+- [x] Publier les vues auth : `php artisan breeze:install blade`
+- [x] Installer les assets : `npm install && npm run build`
+- [x] Exécuter les migrations Breeze : `php artisan migrate`
+- [x] Tester la page `/login` et `/register`
 
 ### 1.5 Vérification finale
-- [ ] Lancer le serveur : `php artisan serve`
-- [ ] Vérifier que `/` redirige vers `/agents` (ou la page de login)
-- [ ] Vérifier l'absence d'erreurs dans les logs (`storage/logs/laravel.log`)
+- [x] Lancer le serveur : `php artisan serve`
+- [x] Vérifier que `/` redirige vers `/agents` (ou la page de login)
+- [x] Vérifier l'absence d'erreurs dans les logs (`storage/logs/laravel.log`)
 
 ---
 

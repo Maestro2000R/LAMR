@@ -1,98 +1,24 @@
-# Mini-CRM de démonstration (Suivi des agents par site)
+# LAMR CRM — Suivi des agents par site
 
-Ceci est un guide rapide pour créer et exécuter une version de démonstration d'un mini-CRM basé sur Laravel, utilisant MySQL.
+Mini-CRM Laravel pour gérer des `Agent`s affectés à des `Site`s via des `Assignment`s (affectations). Application complète : authentification, CRUD web, dashboard, API REST et tests automatisés.
 
-## Objectif
-- Suivre des `Agent` affectés à des `Site` via des `Assignment`.
+## Stack
 
-## Prérequis
-- PHP 8.1+ (ou version compatible Laravel actuelle)
-- Composer
-- MySQL
-- Node.js + npm (optionnel pour assets frontend)
+- Laravel 13 / PHP 8.3+
+- Blade + Tailwind CSS (Laravel Breeze pour l'authentification)
+- SQLite par défaut (zéro configuration pour la démo — voir plus bas pour passer sur MySQL)
+- Laravel Sanctum pour l'API
 
-## Installation rapide
-
-1. Créer le projet Laravel (si vous ne l'avez pas déjà):
+## Installation
 
 ```bash
-composer create-project laravel/laravel laravel-crm-demo
-cd laravel-crm-demo
-```
+composer install
+npm install && npm run build
 
-2. Configurer la base de données MySQL dans le fichier `.env`:
+cp .env.example .env   # si .env n'existe pas déjà
+php artisan key:generate
 
-```
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=laravel_demo
-DB_USERNAME=root
-DB_PASSWORD=
-```
-
-3. Créer la base de données MySQL (exemple):
-
-```bash
-mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS laravel_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-```
-
-4. Installer les dépendances JS (optionnel pour UI):
-
-```bash
-npm install
-npm run build   # ou npm run dev pour développement
-```
-
-## Génération des modèles & migrations (exemples)
-
-Vous pouvez générer les modèles et migrations suivants:
-
-```bash
-php artisan make:model Agent -m
-php artisan make:model Site -m
-php artisan make:model Assignment -m
-```
-
-Exemples de champs (à adapter dans les fichiers de migration):
-
-- `agents` : `id`, `name`, `email`, `phone`, `status`, `timestamps`
-- `sites` : `id`, `name`, `address`, `city`, `timestamps`
-- `assignments` : `id`, `agent_id` (FK), `site_id` (FK), `starts_at`, `ends_at`, `role`, `timestamps`
-
-Pensez à ajouter les clés étrangères et les index dans les migrations.
-
-## Migrations & seeders
-
-Après avoir édité les migrations, exécutez:
-
-```bash
-php artisan migrate
-```
-
-Pour remplir des données de démonstration, créez un seeder et lancez:
-
-```bash
-php artisan make:seeder DemoSeeder
-php artisan db:seed --class=DemoSeeder
-```
-
-## Contrôleurs & routes (CRUD)
-
-Générez rapidement des contrôleurs ressources:
-
-```bash
-php artisan make:controller AgentController --resource
-php artisan make:controller SiteController --resource
-php artisan make:controller AssignmentController --resource
-```
-
-Ajoutez les routes dans `routes/web.php` :
-
-```php
-Route::resource('agents', AgentController::class);
-Route::resource('sites', SiteController::class);
-Route::resource('assignments', AssignmentController::class);
+php artisan migrate --seed
 ```
 
 ## Lancer l'application
@@ -102,46 +28,71 @@ php artisan serve
 # puis ouvrir http://127.0.0.1:8000
 ```
 
-## Suggestions pour la démonstration
+Compte de démonstration créé par le seeder :
 
-- Ajouter une authentification rapide : `composer require laravel/breeze --dev` puis `php artisan breeze:install` pour des pages d'auth par défaut.
-- UI minimale : utiliser Blade + Tailwind (déjà inclus avec Breeze) pour créer des vues CRUD simples.
-- Endpoint API : créer des routes `api.php` pour une démonstration sans UI.
+- Email : `admin@lamr.test`
+- Mot de passe : `password`
 
-## Authentification (optionnel - Breeze)
+## Données de démonstration
 
-Pour ajouter une authentification de démonstration avec Blade + Tailwind via Breeze :
+`php artisan migrate:fresh --seed` régénère la base avec :
+- 20 agents (statuts actif/inactif mélangés)
+- 10 sites
+- 30 affectations (agent ↔ site, avec rôle et période)
+
+## Fonctionnalités
+
+- **Authentification** : login / inscription / mot de passe oublié (Breeze)
+- **Dashboard** (`/dashboard`) : compteurs (agents actifs, sites, affectations en cours) + 5 dernières affectations
+- **Agents** (`/agents`) : liste paginée, création, édition, fiche détail avec ses affectations
+- **Sites** (`/sites`) : liste avec nombre d'agents affectés, CRUD complet, fiche détail
+- **Affectations** (`/assignments`) : CRUD complet, filtres par agent/site, sélection dynamique agent/site
+- **API REST** (`/api/*`) : protégée par Sanctum, ressources `agents`, `sites`, `assignments`
+
+## API
+
+Obtenir un token :
 
 ```bash
-# installer le package Breeze
-composer require laravel/breeze --dev
-
-# générer les scaffolds Blade
-php artisan breeze:install blade
-
-# installer les dépendances JS et builder
-npm install
-npm run dev    # ou `npm run build` pour production
-
-# exécuter les migrations et seeders
-php artisan migrate
-php artisan db:seed
-
-# lancer le serveur
-php artisan serve
+curl -X POST http://127.0.0.1:8000/api/tokens \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@lamr.test","password":"password","device_name":"cli"}'
 ```
 
-Après `breeze:install`, tu auras des routes et vues pour `login`, `register`, `logout`.
+Puis appeler l'API avec le header `Authorization: Bearer <token>` :
 
-Si tu veux, je peux exécuter ces commandes localement pour toi (mais il faudra que Composer et npm soient disponibles sur ta machine). Autre option : je peux simplement générer des instructions et adapter les vues comme je l'ai fait.
+```bash
+curl http://127.0.0.1:8000/api/agents -H "Authorization: Bearer <token>"
+```
 
-## Ce que je peux faire ensuite
-- Implémenter les migrations et modèles complets.
-- Ajouter les contrôleurs CRUD et vues Blade.
-- Préparer des seeders avec données réalistes.
-- Ajouter l'authentification de démo.
+## Tests
 
-Si tu veux, je peux maintenant générer les migrations, modèles et contrôleurs directement dans ce dépôt. Dis-moi si tu veux l'authentification et si tu veux des champs spécifiques pour `Agent` ou `Site`.
+```bash
+php artisan test
+```
 
----
-Fichier créé automatiquement pour la démonstration.
+39 tests couvrant les CRUD web, les relations agent/site/affectation (cascade de suppression) et l'API.
+
+## Passer sur MySQL
+
+Par défaut le projet utilise SQLite (`database/database.sqlite`) pour ne nécessiter aucune installation. Pour utiliser MySQL, éditer `.env` :
+
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=lamr_crm
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Puis créer la base et relancer les migrations :
+
+```bash
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS lamr_crm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+php artisan migrate:fresh --seed
+```
+
+## Structure du projet
+
+Le cahier des charges détaillé (sprints, tâches, critères de validation) se trouve dans [`tasks/`](tasks/README.md).

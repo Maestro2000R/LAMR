@@ -6,6 +6,7 @@
 /storage/*.key
 /.env
 /.env.*
+!/.env.example
 Homestead.yaml
 Homestead.json
 /.vagrant
@@ -70,3 +71,10 @@ cadre-logique-amnar.html
 *.pem
 *.key
 secrets.json
+
+# Laravel (newer scaffold additions)
+/public/build
+/storage/pail
+_ide_helper.php
+/.phpunit.cache
+auth.json

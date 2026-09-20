@@ -1,34 +1,22 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Modifier l\'agent') }} — {{ $agent->name }}</h2>
+    </x-slot>
 
-@section('content')
-<div class="bg-white p-4 rounded shadow">
-    <h1 class="text-xl font-bold mb-4">Modifier un agent</h1>
+    <div class="py-12">
+        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <form method="POST" action="{{ route('agents.update', $agent) }}" class="space-y-6">
+                    @csrf
+                    @method('PUT')
+                    @include('agents._form')
 
-    <form action="{{ route('agents.update', $agent) }}" method="POST">
-        @csrf
-        @method('PUT')
-        <div class="mb-2">
-            <label class="block">Nom</label>
-            <input name="name" class="border p-2 w-full" value="{{ old('name', $agent->name) }}">
+                    <div class="flex items-center gap-4">
+                        <x-primary-button>{{ __('Enregistrer') }}</x-primary-button>
+                        <a href="{{ route('agents.index') }}" class="text-sm text-gray-600 hover:text-gray-900">{{ __('Annuler') }}</a>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="mb-2">
-            <label class="block">Email</label>
-            <input name="email" class="border p-2 w-full" value="{{ old('email', $agent->email) }}">
-        </div>
-        <div class="mb-2">
-            <label class="block">Téléphone</label>
-            <input name="phone" class="border p-2 w-full" value="{{ old('phone', $agent->phone) }}">
-        </div>
-        <div class="mb-2">
-            <label class="block">Status</label>
-            <select name="status" class="border p-2 w-full">
-                <option value="active" {{ $agent->status === 'active' ? 'selected' : '' }}>active</option>
-                <option value="inactive" {{ $agent->status === 'inactive' ? 'selected' : '' }}>inactive</option>
-            </select>
-        </div>
-        <div>
-            <button class="bg-blue-600 text-white px-3 py-1 rounded">Enregistrer</button>
-        </div>
-    </form>
-</div>
-@endsection
+    </div>
+</x-app-layout>

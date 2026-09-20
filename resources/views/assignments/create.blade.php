@@ -1,37 +1,21 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ __('Nouvelle affectation') }}</h2>
+    </x-slot>
 
-@section('content')
-<div class="bg-white p-4 rounded shadow">
-    <h1 class="text-xl font-bold mb-4">Créer une affectation</h1>
-    <form action="{{ route('assignments.store') }}" method="POST">
-        @csrf
-        <div class="mb-2">
-            <label class="block">Agent</label>
-            <select name="agent_id" class="border p-2 w-full">
-                @foreach(App\Models\Agent::all() as $agent)
-                    <option value="{{ $agent->id }}">{{ $agent->name }}</option>
-                @endforeach
-            </select>
+    <div class="py-12">
+        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <form method="POST" action="{{ route('assignments.store') }}" class="space-y-6">
+                    @csrf
+                    @include('assignments._form')
+
+                    <div class="flex items-center gap-4">
+                        <x-primary-button>{{ __('Créer') }}</x-primary-button>
+                        <a href="{{ route('assignments.index') }}" class="text-sm text-gray-600 hover:text-gray-900">{{ __('Annuler') }}</a>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div class="mb-2">
-            <label class="block">Site</label>
-            <select name="site_id" class="border p-2 w-full">
-                @foreach(App\Models\Site::all() as $site)
-                    <option value="{{ $site->id }}">{{ $site->name }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="mb-2">
-            <label class="block">Role</label>
-            <input name="role" class="border p-2 w-full" value="{{ old('role') }}">
-        </div>
-        <div class="mb-2">
-            <label class="block">Début</label>
-            <input type="datetime-local" name="starts_at" class="border p-2 w-full" value="{{ old('starts_at') }}">
-        </div>
-        <div>
-            <button class="bg-blue-600 text-white px-3 py-1 rounded">Créer</button>
-        </div>
-    </form>
-</div>
-@endsection
+    </div>
+</x-app-layout>
