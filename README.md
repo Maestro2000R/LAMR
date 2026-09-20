@@ -116,6 +116,23 @@ mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS lamr_crm CHARACTER SET utf8mb
 php artisan migrate:fresh --seed
 ```
 
+## Déploiement (Render)
+
+Le dépôt contient tout ce qu'il faut pour un déploiement en un clic sur [Render](https://render.com) :
+`Dockerfile` (build multi-stage : assets Vite + PHP), `docker/entrypoint.sh` (migrations, lien de stockage,
+seed unique au premier démarrage) et `render.yaml` (Blueprint : service web + base PostgreSQL gratuite).
+
+1. Ouvrez le lien de déploiement (à adapter avec votre branche/repo si besoin) :
+   `https://render.com/deploy?repo=https://github.com/Maestro2000R/LAMR/tree/claude/app-cahier-charge-d76d54`
+2. Connectez votre compte GitHub si demandé, puis validez la création du Blueprint.
+3. Render provisionne la base PostgreSQL et le service web, construit l'image Docker, exécute les
+   migrations et seed automatiquement (une seule fois — les déploiements suivants ne re-seedent pas).
+4. Une fois le déploiement terminé, l'URL `https://<nom-du-service>.onrender.com` est affichée dans le
+   tableau de bord Render.
+
+Le plan gratuit de Render a un disque éphémère : les photos uploadées (moteurs, balais) ne survivent pas à
+un redéploiement. Pour une démo persistante, passer sur un disque payant ou un stockage S3-compatible.
+
 ## Structure du projet
 
 Le cahier des charges détaillé (sprints, tâches, critères de validation) se trouve dans [`tasks/`](tasks/README.md).
