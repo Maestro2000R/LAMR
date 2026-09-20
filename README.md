@@ -1,6 +1,9 @@
-# LAMR CRM — Suivi des agents par site
+# LAMR CRM — Suivi des agents par site & suivi des moteurs
 
-Mini-CRM Laravel pour gérer des `Agent`s affectés à des `Site`s via des `Assignment`s (affectations). Application complète : authentification, CRUD web, dashboard, API REST et tests automatisés.
+Application Laravel qui héberge deux modules distincts sous une authentification commune :
+
+- **CRM LAMR** : suivi d'`Agent`s affectés à des `Site`s via des `Assignment`s (affectations).
+- **Maintenance moteurs (Les Ateliers MR)** : suivi de l'entretien des moteurs électriques à courant continu — parc moteurs, mesures d'isolement (DAR/PI), usure des balais à charbon.
 
 ## Stack
 
@@ -19,6 +22,7 @@ cp .env.example .env   # si .env n'existe pas déjà
 php artisan key:generate
 
 php artisan migrate --seed
+php artisan storage:link   # requis pour les photos (moteurs, balais)
 ```
 
 ## Lancer l'application
@@ -36,11 +40,11 @@ Compte de démonstration créé par le seeder :
 ## Données de démonstration
 
 `php artisan migrate:fresh --seed` régénère la base avec :
-- 20 agents (statuts actif/inactif mélangés)
-- 10 sites
-- 30 affectations (agent ↔ site, avec rôle et période)
+- 20 agents (statuts actif/inactif mélangés), 10 sites, 30 affectations (module CRM)
+- 2 clients, 2 sites, 3 emplacements, 2 instruments, 2 références de balais et 3 moteurs avec un historique
+  de mesures d'isolement et de relevés de balais (module maintenance moteurs)
 
-## Fonctionnalités
+## Fonctionnalités — CRM LAMR
 
 - **Authentification** : login / inscription / mot de passe oublié (Breeze)
 - **Dashboard** (`/dashboard`) : compteurs (agents actifs, sites, affectations en cours) + 5 dernières affectations
@@ -48,6 +52,23 @@ Compte de démonstration créé par le seeder :
 - **Sites** (`/sites`) : liste avec nombre d'agents affectés, CRUD complet, fiche détail
 - **Affectations** (`/assignments`) : CRUD complet, filtres par agent/site, sélection dynamique agent/site
 - **API REST** (`/api/*`) : protégée par Sanctum, ressources `agents`, `sites`, `assignments`
+
+## Fonctionnalités — Maintenance moteurs (`/maintenance/*`)
+
+Première itération ("noyau minimal") du cahier des charges *Application de suivi de l'entretien des moteurs
+électriques à courant continu* : référentiel moteurs, mesures d'isolement, suivi des balais à charbon.
+Hors périmètre de cette itération : workflow d'intervention complet, alertes automatiques, tableaux de bord
+dédiés, rapports PDF, mode hors connexion, API, rôles/habilitations différenciés.
+
+- **Référentiel** : `Client` → `Site` → `Emplacement`, `Instrument` (mégohmmètres, avec suivi de validité
+  d'étalonnage), catalogue de `Balai` (dimensions, limites, stock)
+- **Moteurs** (`/maintenance/moteurs`) : fiche de vie complète (identité, plaque signalétique, construction,
+  criticité, documentation photo), QR code généré à la volée renvoyant vers la fiche
+- **Mesures d'isolement** : saisie MΩ/GΩ normalisée, calcul automatique du DAR et du PI, classification
+  paramétrable (Normal / À surveiller / Critique / Non interprétable) fondée sur le seuil du moteur et la
+  tendance par rapport à la dernière mesure comparable (même circuit, même état thermique)
+- **Balais à charbon** : positions par moteur, relevés chronologiques, calcul de l'usure cumulée, du
+  pourcentage consommé, de la vitesse d'usure, de l'autonomie estimée et du déséquilibre entre balais
 
 ## API
 
@@ -71,7 +92,9 @@ curl http://127.0.0.1:8000/api/agents -H "Authorization: Bearer <token>"
 php artisan test
 ```
 
-39 tests couvrant les CRUD web, les relations agent/site/affectation (cascade de suppression) et l'API.
+60 tests couvrant les CRUD web, les relations agent/site/affectation (cascade de suppression), l'API, et pour
+le module maintenance : le calcul DAR/PI/classification (`IsolationAnalyzer`), les calculs d'usure des balais
+et les cascades de suppression.
 
 ## Passer sur MySQL
 

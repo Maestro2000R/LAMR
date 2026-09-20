@@ -24,6 +24,29 @@
                     <x-nav-link :href="route('assignments.index')" :active="request()->routeIs('assignments.*')">
                         {{ __('Affectations') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('maintenance.moteurs.index')" :active="request()->routeIs('maintenance.moteurs.*')">
+                        {{ __('Moteurs') }}
+                    </x-nav-link>
+
+                    <div class="flex items-center" x-data="{ open: false }" @click.outside="open = false">
+                        <button @click="open = ! open" type="button"
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out
+                                @class([
+                                    'border-indigo-400 text-gray-900' => request()->routeIs('maintenance.clients.*', 'maintenance.sites.*', 'maintenance.emplacements.*', 'maintenance.instruments.*', 'maintenance.balais.*'),
+                                    'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' => ! request()->routeIs('maintenance.clients.*', 'maintenance.sites.*', 'maintenance.emplacements.*', 'maintenance.instruments.*', 'maintenance.balais.*'),
+                                ])">
+                            {{ __('Référentiel') }}
+                            <svg class="ms-1 h-4 w-4" fill="none" viewBox="0 0 20 20"><path stroke="currentColor" stroke-width="1.5" d="M5 7l5 5 5-5" /></svg>
+                        </button>
+                        <div x-show="open" x-transition style="display: none;"
+                            class="absolute z-50 mt-2 w-48 top-14 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 bg-white">
+                            <a href="{{ route('maintenance.clients.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ __('Clients') }}</a>
+                            <a href="{{ route('maintenance.sites.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ __('Sites') }}</a>
+                            <a href="{{ route('maintenance.emplacements.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ __('Emplacements') }}</a>
+                            <a href="{{ route('maintenance.instruments.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ __('Instruments') }}</a>
+                            <a href="{{ route('maintenance.balais.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ __('Catalogue balais') }}</a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -87,6 +110,24 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('assignments.index')" :active="request()->routeIs('assignments.*')">
                 {{ __('Affectations') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('maintenance.moteurs.index')" :active="request()->routeIs('maintenance.moteurs.*')">
+                {{ __('Moteurs') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('maintenance.clients.index')" :active="request()->routeIs('maintenance.clients.*')">
+                {{ __('Clients') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('maintenance.sites.index')" :active="request()->routeIs('maintenance.sites.*')">
+                {{ __('Sites (moteurs)') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('maintenance.emplacements.index')" :active="request()->routeIs('maintenance.emplacements.*')">
+                {{ __('Emplacements') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('maintenance.instruments.index')" :active="request()->routeIs('maintenance.instruments.*')">
+                {{ __('Instruments') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('maintenance.balais.index')" :active="request()->routeIs('maintenance.balais.*')">
+                {{ __('Catalogue balais') }}
             </x-responsive-nav-link>
         </div>
 
