@@ -41,11 +41,6 @@ Thumbs.db
 /storage/logs/*.log
 /storage/debugbar
 
-# Cache
-/storage/framework/cache/data
-/storage/framework/sessions
-/storage/framework/views
-/storage/framework/testing
 
 # IDEs
 .idea/
